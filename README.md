@@ -30,7 +30,11 @@ $$
 
 This design is analogous to the clipped surrogate objective in PPO/GRPO. GRPO clips the policy ratio to constrain the update step size, while RLSD clips the evidence ratio to constrain the magnitude of credit redistribution. This allows RLSD to use teacher-side information while preserving stable training.
 
+![RLSD Method Overview](images/rlsd-method.png)
+
 ## Performance
+
+![RLSD Performance Results](images/rlsd-performance.png)
 
 | Method | MMMU | MathVista | MathVision | ZeroBench | Wemath | Avg. |
 |--------|-----:|----------:|-----------:|----------:|-------:|-----:|
@@ -204,3 +208,37 @@ If you use this project, please cite Self-Distilled RLVR, EasyVideoR1, EasyR1, a
 ## License
 
 This project follows the same license as [EasyR1](https://github.com/hiyouga/EasyR1).
+
+## Self-Taught RLVR
+
+This series is built around one core question:
+
+> How can large models guide themselves and evolve iteratively?
+
+The Self-Taught line explores three complementary dimensions:
+
+- The first work, **RLSD**, studies the **informed self**: the model teaches itself with privileged information.
+- The second work, **NPO**, focuses on the **temporal self**: the model is taught by its near-future self.
+- The third work, **CoPD**, explores the **parallel self**: the model is taught by another version of itself that takes a different path.
+
+These three works address key questions in RLVR and OPD:
+
+- **RLSD**: How can a model better absorb useful privileged information?
+- **NPO**: How can RLVR introduce more suitable auxiliary learning signals?
+- **CoPD**: How can a single model better absorb the capabilities of multiple experts?
+
+All of these questions share the same underlying theme: how to introduce better learning signals and make them effectively absorbable by the model.
+
+The Self-Taught RLVR series gives the same answer:
+
+> Let the model provide itself with learning signals that match its current capability and are easier to absorb.
+
+Welcome to upvote these works on Hugging Face:
+
+- Hugging Face: https://huggingface.co/papers/2604.03128
+- Hugging Face: https://huggingface.co/papers/2604.20733
+- Hugging Face: https://huggingface.co/papers/2604.27083
+
+## WeChat Group
+
+![WeChat Group](images/wechat.png)

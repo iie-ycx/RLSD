@@ -30,7 +30,11 @@ $$
 
 这一设计与 PPO/GRPO 的 clipped surrogate objective 类似：GRPO 裁剪 policy ratio 来约束更新步长，RLSD 裁剪 evidence ratio 来约束 credit redistribution 幅度，从而在利用教师信息的同时保持训练稳定。
 
+![RLSD 方法概览](images/rlsd-method.png)
+
 ## 🏆 性能
+
+![RLSD 性能结果](images/rlsd-performance.png)
 
 | Method | MMMU | MathVista | MathVision | ZeroBench | Wemath | Avg. |
 |--------|-----:|----------:|-----------:|----------:|-------:|-----:|
@@ -205,3 +209,37 @@ bash examples/visual_rl/grpo_baseline_train_MMFineReason.sh
 ## 📜 许可证
 
 本项目遵循与 [EasyR1](https://github.com/hiyouga/EasyR1) 相同的许可证。
+
+## Self-Taught RLVR
+
+这一系列的核心命题只有一个：
+
+> 如何让大模型自己指导自己，迭代演化？
+
+研究者对 Self-Taught 探索了三个互补维度：
+
+- 第一弹 **RLSD** 探究的是 **informed self**：由特权信息增强的自身来教自己。
+- 第二弹 **NPO** 聚焦于 **temporal self**：由近未来的自身教自己。
+- 第三弹 **CoPD** 探究的是 **parallel self**：由走另一条路的自身来教自己。
+
+这三篇分别面向 RLVR 和 OPD 的热点问题：
+
+- **RLSD**：如何更好地吸收好特权信息？
+- **NPO**：如何在 RLVR 中引入更合适的辅助学习信号？
+- **CoPD**：如何更好地将多个专家的能力吸收到同一个模型中？
+
+这些问题都有着相同的底色：如何引入更好的学习信号并被模型有效地吸收。
+
+Self-Taught RLVR 的系列研究给出了同一个答案：
+
+> 让模型自己为自己提供贴合当前能力的、更易吸收的学习信号。
+
+欢迎在 Hugging Face 上 upvote：
+
+- 🔗 Hugging Face: https://huggingface.co/papers/2604.03128
+- 🔗 Hugging Face: https://huggingface.co/papers/2604.20733
+- 🔗 Hugging Face: https://huggingface.co/papers/2604.27083
+
+## WeChat 交流群
+
+![WeChat 交流群](images/wechat.png)
