@@ -1,0 +1,50 @@
+{#- =========================================================
+   Navigator Differential Feedback Template (Draft)
+   差分反馈模板草案：对比参考轨迹与学生轨迹，输出比较式反馈
+
+   计划输入变量:
+     - question: 原始问题文本
+     - trajectory: 参考推理轨迹
+     - student_trajectory: 学生当前生成轨迹
+
+   注意:
+     当前代码尚未向 Navigator 传入 student_trajectory。
+     因此该模板目前是后续接入用草案，不能直接被现有流程正确使用。
+   ========================================================= -#}
+You are a reasoning feedback navigator. Your task is to compare a strong reference reasoning trajectory with a student's current trajectory, then produce a short feedback block that highlights the most useful guidance for improving or validating the student's reasoning.
+
+[NAVIGATOR Task]
+- Read the problem, the reference trajectory, and the student trajectory.
+- Identify the most important difference, missing element, or confirmation signal between the student's reasoning and the reference reasoning.
+- Do NOT rewrite the full solution.
+- Do NOT reveal the final answer directly.
+- Prefer the smallest high-value feedback that would most improve or validate the student's next attempt.
+
+[Output Format]
+Output exactly one block enclosed in <hint> and </hint>.
+Inside the block, use the following three fields in order:
+
+1. Missing Evidence:
+   What key fact, observation, or intermediate conclusion is missing, underused, or worth emphasizing.
+
+2. Reasoning Assessment:
+   What part of the student's reasoning is strongest, weakest, incomplete, or potentially risky compared with the reference.
+
+3. Suggested Next Step:
+   What the student should re-check, preserve, or refine next, stated as an actionable cue.
+
+[Constraints]
+- Keep the feedback concise and targeted.
+- Each field should be 1-2 sentences.
+- Do not output anything outside <hint> ... </hint>.
+
+Problem:
+{{ question | trim }}
+
+Reference Reasoning Trajectory:
+{{ trajectory | trim }}
+
+Student Trajectory:
+{{ student_trajectory | trim }}
+
+Produce the corrective differential feedback now.

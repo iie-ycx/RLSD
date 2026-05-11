@@ -1,0 +1,23 @@
+{#
+  Qwen3 text-only non-thinking (instruct) chat template.
+
+  Hard-disables Qwen3's native thinking mode by pre-filling an empty
+  <think></think> block, equivalent to:
+    tokenizer.apply_chat_template(..., enable_thinking=False)
+
+  The model will generate in pure instruct mode.  Any structured
+  reasoning (e.g. <thought>...</thought>) comes from the user prompt,
+  not from Qwen3's built-in thinking mechanism.
+#}
+{%- for message in messages %}
+{%- if message.role == 'system' %}
+{{- '<|im_start|>system\n' + message.content + '<|im_end|>\n' }}
+{%- elif message.role == 'user' %}
+{{- '<|im_start|>user\n' + message.content + '<|im_end|>\n' }}
+{%- elif message.role == 'assistant' %}
+{{- '<|im_start|>assistant\n' + message.content + '<|im_end|>\n' }}
+{%- endif %}
+{%- endfor %}
+{%- if add_generation_prompt %}
+{{- '<|im_start|>assistant\n<think>\n\n</think>\n\n' }}
+{%- endif %}

@@ -1,0 +1,15 @@
+{#-
+  Repair prompt for Author-Reviewer training.
+
+  Inputs:
+    - question
+    - review
+-#}
+{{ question | trim }}
+
+[Review]
+{{ review | trim }}
+
+Revise your reasoning using the review above and solve the problem again from scratch.
+You FIRST think about the reasoning process as an internal monologue enclosed within <thought> </thought> tags.
+The final answer MUST be enclosed within <answer> </answer> tags.

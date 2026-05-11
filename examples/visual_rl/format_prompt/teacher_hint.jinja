@@ -1,0 +1,25 @@
+{#- =========================================================
+   Teacher Hint Injection Template
+   教师提示注入模板 - 将Navigator提取的hint注入到教师推理prompt中
+
+   输入变量:
+     - question: 原始问题文本（已包含任务指令）
+     - hint: Navigator提取的推理提示
+     - gt_answer: 参考答案（课程学习阶段可能为空）
+
+   输出: 完整的教师推理prompt
+   ========================================================= -#}
+{{ question | trim }}
+
+[Reasoning Hint]
+A reasoning navigator has identified the following key insight for this problem:
+{{ hint | trim }}
+
+{%- if gt_answer %}
+
+[Reference Answer]
+{{ gt_answer | trim }}
+
+{%- endif %}
+
+Using the hint above{% if gt_answer %} and the reference answer{% endif %}, solve the problem step by step. You FIRST think about the reasoning process as an internal monologue enclosed within <thought> </thought> tags. The final answer MUST be enclosed within <answer> </answer> tags.

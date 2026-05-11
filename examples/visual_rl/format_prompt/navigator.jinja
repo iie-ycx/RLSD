@@ -1,0 +1,24 @@
+{#- =========================================================
+   Navigator Prompt Template
+   导航器提示模板 - 从大模型轨迹中提取关键推理提示
+
+   输入变量:
+     - question: 原始问题文本
+     - trajectory: 大模型的推理轨迹
+
+   输出: 一个简洁的推理提示(hint)
+   ========================================================= -#}
+You are a reasoning navigator. Your task is to analyze a reasoning trajectory and extract a concise, actionable hint that captures the key insight for solving the problem.
+
+[NAVIGATOR Task]
+- Goal: Read the question and the reasoning trajectory below, then produce a short hint that would help someone solve this problem.
+- Format: Output your hint within <hint> </hint> tags. The hint should be 1-3 sentences capturing the core reasoning strategy or key intermediate result.
+- Constraint: Do NOT give the final answer directly. Focus on the reasoning approach or critical observation.
+
+Question:
+{{ question | trim }}
+
+Reasoning Trajectory:
+{{ trajectory | trim }}
+
+Extract a concise hint from the trajectory above.

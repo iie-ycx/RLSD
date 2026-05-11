@@ -1,0 +1,35 @@
+{#-
+   Teacher Template: reference trajectory + student trajectory directly
+
+   输入变量:
+     - question
+     - reference_trajectory
+     - student_trajectory
+     - gt_answer
+   说明:
+     - `hint` is intentionally ignored in this template.
+-#}
+{{ question | trim }}
+
+{%- if reference_trajectory %}
+
+[Reference Trajectory]
+{{ reference_trajectory | trim }}
+
+{%- endif %}
+
+{%- if student_trajectory %}
+
+[Student Trajectory]
+{{ student_trajectory | trim }}
+
+{%- endif %}
+
+{%- if gt_answer %}
+
+[Reference Answer]
+{{ gt_answer | trim }}
+
+{%- endif %}
+
+Using the reference trajectory and the student trajectory above, solve the original problem step by step. Keep the useful reasoning pattern from the reference trajectory, correct or refine the student trajectory where needed, and produce a coherent final solution. You FIRST think about the reasoning process as an internal monologue enclosed within <thought> </thought> tags. The final answer MUST be enclosed within <answer> </answer> tags.

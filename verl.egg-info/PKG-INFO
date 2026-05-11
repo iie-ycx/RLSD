@@ -1,0 +1,255 @@
+Metadata-Version: 2.4
+Name: verl
+Version: 0.3.3.dev0
+Summary: An Efficient, Scalable, Multi-Modality RL Training Framework based on veRL
+Home-page: https://github.com/volcengine/verl
+Author: verl
+Author-email: zhangchi.usc1992@bytedance.com, gmsheng@connect.hku.hk, hiyouga@buaa.edu.cn
+License: Apache 2.0 License
+Requires-Python: >=3.9.0
+Description-Content-Type: text/markdown
+Requires-Dist: accelerate
+Requires-Dist: codetiming
+Requires-Dist: datasets
+Requires-Dist: liger-kernel
+Requires-Dist: mathruler
+Requires-Dist: numpy
+Requires-Dist: omegaconf
+Requires-Dist: pandas
+Requires-Dist: peft
+Requires-Dist: pillow
+Requires-Dist: pyarrow>=15.0.0
+Requires-Dist: pylatexenc
+Requires-Dist: qwen-vl-utils[decord]==0.0.14
+Requires-Dist: ray[default]
+Requires-Dist: tensordict
+Requires-Dist: torchdata
+Requires-Dist: transformers==4.57.3
+Requires-Dist: vllm==0.11.0
+Requires-Dist: wandb
+Requires-Dist: rouge_score
+Requires-Dist: math_verify
+Requires-Dist: mathruler
+Provides-Extra: dev
+Requires-Dist: pre-commit; extra == "dev"
+Requires-Dist: ruff; extra == "dev"
+Dynamic: author
+Dynamic: author-email
+Dynamic: description
+Dynamic: description-content-type
+Dynamic: home-page
+Dynamic: license
+Dynamic: provides-extra
+Dynamic: requires-dist
+Dynamic: requires-python
+Dynamic: summary
+
+# EasyR1-For-Qwen3-VL
+
+[中文](README.md)
+
+基于 [EasyR1](https://github.com/hiyouga/EasyR1) 修改，支持 **Qwen3-VL** 系列模型进行视频理解强化学习训练。
+
+本项目基于 EasyR1 和 [veRL](https://github.com/volcengine/verl) 的优秀工作。感谢所有作者提供如此高性能的强化学习训练框架。
+
+## 特性
+
+- 支持 **Qwen3-VL** 系列视觉语言模型
+- **图像-视频混合训练**，优化梯度流
+- 图像和视频分辨率独立控制
+- 视频元数据支持，精确帧处理
+- 完整的视频理解任务奖励函数
+  - 多选题、数值计算、OCR、开放式问答
+  - 时间定位、空间定位、时空定位
+  - 目标追踪、图像/视频分割
+
+## 环境要求
+
+## 安装
+
+### 第一步：创建 Conda 环境
+
+```bash
+conda create -n easyr1 python=3.11
+conda activate easyr1
+```
+
+### 第二步：克隆并安装
+
+```bash
+git clone https://github.com/cyuQ1n/EasyR1-For-Qwen3-VL.git
+cd EasyR1-For-Qwen3-VL
+pip install -e .
+```
+
+- 依赖说明: `requirements.txt` 包含以下依赖：
+
+```
+accelerate
+codetiming
+datasets
+liger-kernel
+mathruler
+numpy
+omegaconf
+pandas
+peft
+pillow
+pyarrow>=15.0.0
+pylatexenc
+qwen-vl-utils[decord]==0.0.14
+ray[default]
+tensordict
+torchdata
+transformers==4.57.3
+vllm==0.11.0
+wandb
+# For Reward
+rouge_score
+math_verify
+mathruler
+```
+
+### 第三步：安装 Flash Attention
+
+```bash
+pip install flash-attn==2.8.3 --no-build-isolation
+```
+
+## 快速开始
+
+### 1. 准备数据集
+
+数据集应为 JSON 格式，结构如下：
+
+```json
+[
+  {
+    "problem": "你的问题",
+    "answer": "标准答案",
+    "videos": ["path/to/video.mp4"],
+    "data_type": "video",
+    "problem_type": "multiple_choice"
+  }
+]
+```
+
+支持的 `problem_type` 值：
+- `multiple_choice`（多选题）、`numerical`（数值计算）、`regression`（回归）、`ocr`、`open_ended`（开放式问答）、`math`（数学）
+- `temporal_grounding`（时间定位）、`spatial_grounding`（空间定位）、`spatial_temporal_grounding`（时空定位）
+- `tracking`（目标追踪）、`image_segmentation`（图像分割）、`video_segmentation`（视频分割）
+
+### 2. 配置训练
+
+编辑 `examples/config_video_r1.yaml`：
+
+```yaml
+data:
+  train_files: /path/to/your/train.json
+  val_files: /path/to/your/val.json
+  image_dir: /path/to/your/data/root
+  video_fps: 2.0
+  video_max_frames: 64
+  max_prompt_length: 16384
+  max_response_length: 4096
+  # 分辨率设置
+  image_max_pixels: 1048576
+  video_max_pixels: 262144
+
+worker:
+  actor:
+    model:
+      model_path: Qwen/Qwen3-VL-8B-Instruct
+    # ... 其他设置
+
+trainer:
+  project_name: your_project
+  experiment_name: your_experiment
+  save_checkpoint_path: /path/to/checkpoints
+```
+
+### 3. 开始训练
+
+**单节点训练：**
+```bash
+bash examples/train_qwen3_vl_video_r1.sh
+```
+
+**多节点训练：**
+```bash
+# 在主节点
+ray start --head --port=6379
+
+# 在工作节点
+ray start --address=<head_node_ip>:6379
+
+# 在主节点运行训练
+bash examples/train_qwen3_vl_video_r1_multi_node.sh
+```
+
+### 4. 合并检查点
+
+```bash
+python3 scripts/model_merger.py --local_dir checkpoints/your_exp/global_step_xxx/actor
+```
+
+## 相对于原版 EasyR1 的主要修改
+
+详见 [docs/MODIFICATIONS_zh.md](docs/MODIFICATIONS_zh.md)（[English](docs/MODIFICATIONS.md)）了解支持 Qwen3-VL 视频训练所做的详细修改。
+
+## 配置参数
+
+### 数据配置
+
+| 参数 | 说明 | 默认值 |
+|------|------|--------|
+| `video_fps` | 视频采样帧率 | 2.0 |
+| `video_max_frames` | 每个视频最大帧数 | 128 |
+| `image_max_pixels` | 图像最大像素数 | 1048576 |
+| `video_max_pixels` | 视频最大像素数 | 262144 |
+
+### Worker 配置
+
+| 参数 | 说明 |
+|------|------|
+| `worker.rollout.tensor_parallel_size` | vLLM 推理的张量并行度 |
+| `worker.rollout.gpu_memory_utilization` | vLLM 的 GPU 显存占用比例 |
+| `worker.actor.fsdp.enable_full_shard` | 启用 FSDP 完全分片 |
+
+## 常见问题
+
+**问：Image features and image tokens do not match**
+
+答：增大 `data.max_prompt_length` 或减小 `data.max_pixels`。
+
+**问：CUDA out of memory**
+
+答：减小 `worker.rollout.gpu_memory_utilization` 并启用 `worker.actor.offload.offload_params`。
+
+**问：多节点训练卡住**
+
+答：使用 `ray status` 检查 Ray 集群状态，确保所有节点已连接。
+
+## 引用
+
+如果使用本项目，请引用原版 EasyR1 和 veRL：
+
+```bibtex
+@misc{zheng2025easyr1,
+  title        = {EasyR1: An Efficient, Scalable, Multi-Modality RL Training Framework},
+  author       = {Yaowei Zheng, Junting Lu, Shenzhi Wang, Zhangchi Feng, Dongdong Kuang, Yuwen Xiong},
+  howpublished = {\url{https://github.com/hiyouga/EasyR1}},
+  year         = {2025}
+}
+
+@article{sheng2024hybridflow,
+  title   = {HybridFlow: A Flexible and Efficient RLHF Framework},
+  author  = {Guangming Sheng and Chi Zhang and others},
+  year    = {2024},
+  journal = {arXiv preprint arXiv: 2409.19256}
+}
+```
+
+## 许可证
+
+本项目遵循与 [EasyR1](https://github.com/hiyouga/EasyR1) 相同的许可证。

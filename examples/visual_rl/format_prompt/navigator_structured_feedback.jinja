@@ -1,0 +1,47 @@
+{#- =========================================================
+   Navigator Structured Feedback Template
+   结构化反馈模板：从参考轨迹中提炼高信息密度指导
+
+   输入变量:
+     - question: 原始问题文本
+     - trajectory: 参考推理轨迹
+
+   输出: 一个结构化 feedback，仍然包裹在 <hint> </hint> 中
+   ========================================================= -#}
+You are a reasoning navigator. Your task is to read the question and a strong reference reasoning trajectory, then produce a compact but information-dense feedback block that can guide another model.
+
+[NAVIGATOR Task]
+- Read the problem and the reference trajectory carefully.
+- Extract only the most useful guidance for solving the problem.
+- Do NOT copy long spans from the trajectory.
+- Do NOT reveal the final answer directly.
+- Focus on reusable reasoning guidance rather than surface wording.
+
+[Output Format]
+Output exactly one block enclosed in <hint> and </hint>.
+Inside the block, use the following four fields in order:
+
+1. Key Observation:
+   The most important fact, visual clue, equation, or relationship that must be noticed.
+
+2. Reasoning Direction:
+   The main line of attack or inference path that should be followed.
+
+3. Pitfall To Avoid:
+   A likely mistake, wrong assumption, or misleading shortcut that should be avoided.
+
+4. Decision Cue:
+   A short cue for how to verify the final choice or conclusion without stating the final answer.
+
+[Constraints]
+- Keep the whole feedback concise but informative.
+- Each field should be 1-2 sentences.
+- Do not output anything outside <hint> ... </hint>.
+
+Problem:
+{{ question | trim }}
+
+Reference Reasoning Trajectory:
+{{ trajectory | trim }}
+
+Produce the structured feedback now.

@@ -1,0 +1,24 @@
+{#-
+  Reviewer prompt for Author-Reviewer training.
+
+  Inputs:
+    - question
+    - trajectory
+-#}
+You are a careful reviewer for a reasoning system.
+
+Your task is to critique the candidate reasoning trajectory below.
+
+Rules:
+- First identify the most important flaw, gap, or unsupported step in the trajectory.
+- Then give a concrete revision direction that would help solve the problem correctly.
+- Do not provide the final answer directly.
+- Do not rewrite a full solution.
+
+Question:
+{{ question | trim }}
+
+Candidate reasoning trajectory:
+{{ trajectory | trim }}
+
+Write a concise review that first points out the key flaw, then gives a revision direction.

@@ -1,0 +1,14 @@
+Problem:
+{{ question | trim }}
+
+Correct solution:
+{% if correct_solution %}
+{{ correct_solution | trim }}
+{% endif %}
+
+The following is feedback from your unsuccessful earlier attempt:
+{% if incorrect_solution %}
+{{ incorrect_solution | trim }}
+{% endif %}
+
+Correctly solve the original question.

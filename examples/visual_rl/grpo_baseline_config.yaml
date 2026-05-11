@@ -1,0 +1,158 @@
+# =============================================================================
+# Baseline GRPO Training Configuration
+# 标准 GRPO 训练配置，与 Author-Reviewer 方法对齐以进行公平对比
+# =============================================================================
+#
+# 数据格式要求：
+# {
+#     "problem": "问题内容...",
+#     "answer": "正确答案",
+#     "problem_type": "math",
+#     "data_type": "image" | "video" | "text",
+#     "images": ["path/to/image.jpg"] 或 [],
+#     "videos": ["path/to/video.mp4"] 或 []
+# }
+#
+# =============================================================================
+
+data:
+  train_files: /pfs/siqingyi/vl_rl_data/final_data/MMFineReason_data_with_conclusion.json
+  val_files: /pfs/qcy/RL_DATA/val_data/visual/vl_math_val_mini_data.json
+
+  prompt_key: problem
+  answer_key: answer
+  image_key: images
+  video_key: videos
+
+  image_dir: null
+
+  video_fps: 2.0
+  video_max_frames: 128
+  use_preprocessed_videos: false
+
+  min_pixels: 262144
+  image_max_pixels: 1048576
+  video_max_pixels: 262144
+
+  max_prompt_length: 16384
+  max_response_length: 4096
+  filter_overlong_prompts: false
+
+  # 与 Author-Reviewer 对齐：256 global batch size / 8 rollout.n = 32 rollout_batch_size
+  # 但为了公平对比，我们使用相同的 rollout_batch_size
+  rollout_batch_size: 256
+  mini_rollout_batch_size: null
+  val_batch_size: 256
+
+  format_prompt: examples/visual_rl/format_prompt/unified.jinja
+  override_chat_template: null
+  shuffle: false
+  seed: 1
+
+algorithm:
+  adv_estimator: grpo
+  disable_kl: true
+  use_kl_loss: false
+  kl_penalty: low_var_kl
+  kl_coef: 0.01
+
+  online_filtering: false
+  filter_key: overall
+  filter_low: 0.01
+  filter_high: 0.99
+
+
+
+worker:
+  actor:
+    # 与 Author-Reviewer 对齐的 batch size
+    global_batch_size: 256
+    micro_batch_size_per_device_for_update: 1
+    micro_batch_size_per_device_for_experience: 1
+    max_grad_norm: 1.0
+
+    clip_ratio_low: 0.2
+    clip_ratio_high: 0.28
+
+    padding_free: true
+    dynamic_batching: true
+    ulysses_size: 1
+
+    model:
+      model_path: Qwen/Qwen3-VL-8B-Instruct
+      enable_gradient_checkpointing: true
+      trust_remote_code: false
+      freeze_vision_tower: false
+
+    optim:
+      lr: 1.0e-6
+      weight_decay: 0.01
+      strategy: adamw
+      lr_warmup_ratio: 0.0
+
+    fsdp:
+      enable_full_shard: true
+      enable_cpu_offload: false
+      enable_rank0_init: true
+
+    offload:
+      offload_params: true
+      offload_optimizer: true
+
+  rollout:
+    # 与 Author-Reviewer 对齐的采样参数
+    n: 8
+    temperature: 1.0
+    top_p: 1.0
+
+    limit_images: 0
+    gpu_memory_utilization: 0.6
+    enforce_eager: false
+    enable_chunked_prefill: true
+    tensor_parallel_size: 1
+    max_num_batched_tokens: 32768
+    disable_tqdm: false
+
+    val_override_config:
+      temperature: 0.7
+      top_p: 0.8
+      top_k: 20
+      repetition_penalty: 1.0
+      presence_penalty: 1.5
+      n: 1
+
+  ref:
+    fsdp:
+      enable_full_shard: true
+      enable_cpu_offload: true
+      enable_rank0_init: true
+    offload:
+      offload_params: false
+
+  reward:
+    reward_function: examples/visual_rl/reward_function/unified.py:compute_score
+
+trainer:
+  total_epochs: 10
+  max_steps: null
+
+  project_name: grpo_baseline_rl
+  experiment_name: grpo_baseline_qwen3vl8b_MMFineReason
+
+  logger: ["file", "wandb"]
+
+  nnodes: 1
+  n_gpus_per_node: 8
+
+  max_try_make_batch: 20
+  val_freq: 5
+  val_before_train: true
+  val_only: false
+  val_generations_to_log: 3
+
+  save_freq: 10
+  save_limit: 5
+  save_model_only: false
+  save_checkpoint_path: null
+  load_checkpoint_path: null
+  find_last_checkpoint: true

@@ -1,0 +1,44 @@
+{#-
+   Teacher Template: compact reference/student trajectory context + differential feedback
+
+   输入变量:
+     - question
+     - reference_trajectory
+     - student_trajectory
+     - hint
+     - gt_answer
+-#}
+{{ question | trim }}
+
+{%- if reference_trajectory %}
+
+[Reference Trajectory Snapshot]
+The following short reference snippet preserves a key earlier step and the final segment:
+{{ reference_trajectory | trim }}
+
+{%- endif %}
+
+{%- if student_trajectory %}
+
+[Student Trajectory Snapshot]
+The following short snippet shows the student's current reasoning state:
+{{ student_trajectory | trim }}
+
+{%- endif %}
+
+{%- if hint %}
+
+[Navigator Differential Feedback]
+Use this feedback to focus on the most important difference, missing evidence, or next check:
+{{ hint | trim }}
+
+{%- endif %}
+
+{%- if gt_answer %}
+
+[Reference Answer]
+{{ gt_answer | trim }}
+
+{%- endif %}
+
+Using the information above, produce a strong solution to the original problem. Preserve useful cues from the reference snippet, account for the student's current reasoning state, and use the navigator feedback only as focused guidance rather than something to copy verbatim. You FIRST think about the reasoning process as an internal monologue enclosed within <thought> </thought> tags. The final answer MUST be enclosed within <answer> </answer> tags.

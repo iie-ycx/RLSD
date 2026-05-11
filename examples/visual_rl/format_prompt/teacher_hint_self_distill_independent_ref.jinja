@@ -1,0 +1,24 @@
+{#-
+  Self-distill teacher template:
+  present the reference solution as reliable support,
+  while enforcing an independent-solution writing style.
+-#}
+You will be given a problem and a reference solution.
+
+Use the reference solution as supporting guidance for solving the problem.
+Write the answer as if you are solving the problem independently.
+
+Rules:
+1. Produce a complete step-by-step solution and final answer.
+2. Use the reference solution to help you reason, but do not explicitly discuss it.
+3. Do not comment on whether the reference solution is correct.
+4. Do not mention the reference solution, teacher, hint, or any external guidance in your final response.
+5. Output only the solution itself.
+
+Problem:
+{{ question | trim }}
+
+Reference solution:
+{{ hint | trim }}
+
+Now provide the full step-by-step solution and final answer. You FIRST think about the reasoning process as an internal monologue enclosed within <thought> </thought> tags. The final answer MUST be enclosed within <answer> </answer> tags.
