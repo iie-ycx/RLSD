@@ -239,9 +239,11 @@ Welcome to upvote these works on Hugging Face:
 - Hugging Face: https://huggingface.co/papers/2604.20733
 - Hugging Face: https://huggingface.co/papers/2604.27083
 
+## ☎️ We're Hiring!
+We're hiring multimodal research scientists and TGT interns at JD Explore Academy! If you have top-tier publications and are passionate about video understanding and VLMs, please send your resume to: siqingyi.phoebus@jd.com. We'd love to hear from you!
+
 ## WeChat Group
 
 ![WeChat Group](images/wechat.png)
 
-## ☎️ We're Hiring!
-We're hiring multimodal research scientists and TGT interns at JD Explore Academy! If you have top-tier publications and are passionate about video understanding and VLMs, please send your resume to: siqingyi.phoebus@jd.com. We'd love to hear from you!
+
