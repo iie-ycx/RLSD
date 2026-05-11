@@ -199,19 +199,6 @@ If you use this project, please cite Self-Distilled RLVR, EasyVideoR1, EasyR1, a
       url={https://arxiv.org/abs/2604.16893},
 }
 
-@misc{zheng2025easyr1,
-  title        = {EasyR1: An Efficient, Scalable, Multi-Modality RL Training Framework},
-  author       = {Yaowei Zheng, Junting Lu, Shenzhi Wang, Zhangchi Feng, Dongdong Kuang, Yuwen Xiong},
-  howpublished = {\url{https://github.com/hiyouga/EasyR1}},
-  year         = {2025}
-}
-
-@article{sheng2024hybridflow,
-  title   = {HybridFlow: A Flexible and Efficient RLHF Framework},
-  author  = {Guangming Sheng and Chi Zhang and others},
-  year    = {2024},
-  journal = {arXiv preprint arXiv: 2409.19256}
-}
 ```
 
 ## License
